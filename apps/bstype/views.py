@@ -1,6 +1,5 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from django.http import JsonResponse
 
 from common.serializer import ResponseModelViewSet
 from bstype.models import Bussiness, Service
@@ -8,16 +7,11 @@ from .serializer import BussinessSerializer, ServiceSerializer
 
 
 class BussinessList(ListAPIView):
-    queryset = Bussiness.objects.all()
-    serializer_class = BussinessSerializer
 
-    # def get_queryset(self):
-    #     json_data = {'msg': 'ok'}
-    #     queryset = Bussiness.objects.all()
-    #     serializer = BussinessSerializer(instance=queryset, many=True)
-    #     json_data['data'] = serializer.data
-    #     print(json_data)
-    #     return Response(json_data)
+    def list(self, request):
+        queryset = Bussiness.objects.all()
+        serializer = BussinessSerializer(queryset, many=True)
+        return Response({'data': serializer.data})
 
 
 class BussinessViewsets(ResponseModelViewSet):
