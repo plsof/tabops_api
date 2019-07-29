@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'bstype/', include('bstype.urls')),
     path(r'asset/', include('asset.urls')),
+    path(r'architecture/', include('architecture.urls')),
 ]

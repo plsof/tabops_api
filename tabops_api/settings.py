@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'common',
     'bstype',
     'asset',
+    'architecture',
     'rest_framework',
     'corsheaders',
 ]
