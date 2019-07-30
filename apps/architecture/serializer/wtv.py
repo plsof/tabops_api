@@ -4,12 +4,16 @@ from ..models import Wtv
 
 
 class WtvSerializer(serializers.ModelSerializer):
+    idc_name = serializers.SerializerMethodField()
     service_name = serializers.SerializerMethodField()
     zabbix_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Wtv
-        fields = ['idc', 'service', 'service_name', 'ip', 'path', 'port', 'status', 'zabbix_status', 'comment']
+        fields = ['id', 'idc', 'idc_name', 'service', 'service_name', 'ip', 'path', 'port', 'status', 'zabbix_status', 'comment']
+
+    def get_idc_name(self, obj):
+        return obj.idc.name
 
     def get_service_name(self, obj):
         return obj.service.name

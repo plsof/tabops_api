@@ -14,7 +14,8 @@ ISP = (
     (2, '联通')
 )
 
-ZABBIX_STATUS = (
+# zabbix状态
+Z_STATUS = (
     (0, 'UP'),
     (1, 'Down'),
     (2, 'None')
