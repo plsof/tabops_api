@@ -11,9 +11,12 @@ class WtvViewsets(ResponseModelViewSet):
     def get_queryset(self):
         queryset = Wtv.objects.all()
         idc = self.request.query_params.get('idc', None)
+        service = self.request.query_params.get('service', None)
+        ip = self.request.query_params.get('ip', None)
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
-        service = self.request.query_params.get('service', None)
         if service is not None and service is not '':
             queryset = queryset.filter(service=service)
+        if ip is not None and ip is not '':
+            queryset = queryset.filter(ip__contains=ip)
         return queryset
