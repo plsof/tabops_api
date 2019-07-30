@@ -6,12 +6,19 @@ from bstype.models import Bussiness, Service
 from .serializer import BussinessSerializer, ServiceSerializer
 
 
+# 获取全部数据，不分页
 class BussinessList(ListAPIView):
 
     def list(self, request):
         queryset = Bussiness.objects.all()
+        response = {
+            'code': 0,
+            'data': [],
+            'msg': 'success'
+        }
         serializer = BussinessSerializer(queryset, many=True)
-        return Response({'data': serializer.data})
+        response['data'] = serializer.data
+        return Response(response)
 
 
 class BussinessViewsets(ResponseModelViewSet):
@@ -24,6 +31,24 @@ class BussinessViewsets(ResponseModelViewSet):
         if btype is not None and btype is not '':
             queryset = queryset.filter(btype=btype)
         return queryset
+
+
+# 获取全部数据，不分页
+class ServiceList(ListAPIView):
+
+    def list(self, request):
+        response = {
+            'code': 0,
+            'data': [],
+            'msg': 'success'
+        }
+        queryset = Service.objects.all()
+        bussiness = request.query_params.get('bussiness', None)
+        if bussiness is not None and bussiness is not '':
+            queryset = queryset.filter(bussiness=bussiness)
+        serializer = ServiceSerializer(queryset, many=True)
+        response['data'] = serializer.data
+        return Response(response)
 
 
 class ServiceViewsets(ResponseModelViewSet):
