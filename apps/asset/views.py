@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from common.serializer import ResponseModelViewSet
 
 from .models import Idc
+from .models import Host
 from .serializer import IdcSerializer
+from .serializer import HostSerializer
 
 
 # 获取全部数据，不分页
@@ -30,4 +32,16 @@ class IdcViewsets(ResponseModelViewSet):
         isp = self.request.query_params.get('isp', None)
         if isp is not None and isp is not '':
             queryset = queryset.filter(isp=isp)
+        return queryset
+
+
+class HostViewsets(ResponseModelViewSet):
+    serializer_class = HostSerializer
+    model = Host
+
+    def get_queryset(self):
+        queryset = Host.objects.all()
+        idc = self.request.query_params.get('idc', None)
+        if idc is not None and idc is not '':
+            queryset = queryset.filter(idc=idc)
         return queryset
