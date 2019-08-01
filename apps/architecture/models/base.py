@@ -13,7 +13,7 @@ class Base(BaseModel):
     ip = models.GenericIPAddressField(protocol='IPv4', blank=True, null=True, verbose_name="IP地址")
     path = models.CharField(max_length=255, blank=True, null=True, verbose_name='部署路径')
     port = models.IntegerField(blank=True, null=True, verbose_name="端口号")
-    status = models.IntegerField(blank=True, null=True, verbose_name='zabbix状态', default=2, choices=Z_STATUS)
+    status = models.IntegerField(verbose_name='zabbix状态', default=2, choices=Z_STATUS)
     comment = models.TextField(max_length=255, blank=True, null=True, verbose_name="备注")
 
     # def __str__(self):
