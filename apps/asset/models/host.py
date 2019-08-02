@@ -3,14 +3,14 @@ from django.db import models
 from common.models import BaseModel
 from common.constants import MINION_STATUS, Z_STATUS
 
-from .idc import Idc
+# from .idc import Idc
 # from .cabinet import Cabinet
 # from .rack import Rack
 # from .shost import SHost
 
 
 class Host(BaseModel):
-    idc = models.ForeignKey(Idc, on_delete=models.CASCADE, blank=True, null=True, verbose_name='机房')
+    idc = models.CharField(max_length=255, blank=True, null=True, verbose_name='机房')
     # cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE, blank=True, null=True, verbose_name="机柜")
     # rack = models.ForeignKey(Rack, on_delete=models.CASCADE, blank=True, null=True, verbose_name="机架")
     # s_host = models.ForeignKey(SHost, on_delete=models.CASCADE, blank=True, null=True, verbose_name='宿主机')
@@ -42,5 +42,6 @@ class Host(BaseModel):
         return self.lan_ip
 
     class Meta:
+        ordering = ['idc', 'lan_ip']
         verbose_name = "主机"
         verbose_name_plural = verbose_name

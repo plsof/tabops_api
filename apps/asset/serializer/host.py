@@ -4,12 +4,12 @@ from ..models import Host
 
 
 class HostSerializer(serializers.ModelSerializer):
-    idc_name = serializers.SerializerMethodField()
+    # idc_name = serializers.SerializerMethodField()
     zabbix_status = serializers.SerializerMethodField()
     minion_status = serializers.SerializerMethodField()
 
-    def get_idc_name(self, obj):
-        return obj.idc.name
+    # def get_idc_name(self, obj):
+    #     return obj.idc.name
 
     def get_zabbix_status(self, obj):
         return obj.get_z_status_display()
@@ -19,6 +19,6 @@ class HostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Host
-        fields = ['id', 'idc', 'idc_name', 'salt_id', 'lan_ip', 'man_ip', 'platform', 'hostname', 'salt_version',
+        fields = ['id', 'idc', 'salt_id', 'lan_ip', 'man_ip', 'platform', 'hostname', 'salt_version',
                   'os_finger', 'serial_number', 'mem_total', 'num_cpus', 'z_status', 'zabbix_status', 'm_status',
                   'minion_status', 'roles', 'comment']
