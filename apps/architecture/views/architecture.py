@@ -39,7 +39,7 @@ class WtvViewSet(ResponseModelViewSet):
         queryset = Wtv.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -57,7 +57,7 @@ class BImsBootViewSet(ResponseModelViewSet):
         queryset = BImsBoot.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -75,7 +75,7 @@ class BImsPanelViewSet(ResponseModelViewSet):
         queryset = BImsPanel.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -93,7 +93,7 @@ class TmsViewSet(ResponseModelViewSet):
         queryset = Tms.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -111,7 +111,7 @@ class EpgViewSet(ResponseModelViewSet):
         queryset = Epg.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -129,7 +129,7 @@ class SearchViewSet(ResponseModelViewSet):
         queryset = Search.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -147,7 +147,7 @@ class PicViewSet(ResponseModelViewSet):
         queryset = Pic.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -165,7 +165,7 @@ class PplViewSet(ResponseModelViewSet):
         queryset = Ppl.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -183,7 +183,7 @@ class CosEpgViewSet(ResponseModelViewSet):
         queryset = CosEpg.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -201,7 +201,7 @@ class UicViewSet(ResponseModelViewSet):
         queryset = Uic.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -219,7 +219,7 @@ class MScreenViewSet(ResponseModelViewSet):
         queryset = MScreen.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -237,7 +237,7 @@ class DMS2ViewSet(ResponseModelViewSet):
         queryset = DMS2.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -255,7 +255,7 @@ class XMppViewSet(ResponseModelViewSet):
         queryset = XMpp.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':
@@ -273,7 +273,7 @@ class NDmsViewSet(ResponseModelViewSet):
         queryset = NDms.objects.all()
         idc = self.request.query_params.get('idc', None)
         service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', None)
+        ip = self.request.query_params.get('ip', '').strip()
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
         if service is not None and service is not '':

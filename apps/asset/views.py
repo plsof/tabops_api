@@ -42,6 +42,15 @@ class HostViewsets(ResponseModelViewSet):
     def get_queryset(self):
         queryset = Host.objects.all()
         idc = self.request.query_params.get('idc', None)
+        lan_ip = self.request.query_params.get('lan_ip', '').strip()
+        roles = self.request.query_params.get('roles', '').strip()
+        z_status = self.request.query_params.get('z_status', None)
         if idc is not None and idc is not '':
             queryset = queryset.filter(idc=idc)
+        if lan_ip is not None and lan_ip is not '':
+            queryset = queryset.filter(lan_ip__contains=lan_ip)
+        if roles is not None and roles is not '':
+            queryset = queryset.filter(roles__icontains=roles)
+        if z_status is not None and z_status is not '':
+            queryset = queryset.filter(z_status=z_status)
         return queryset
