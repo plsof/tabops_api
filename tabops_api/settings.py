@@ -33,18 +33,23 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # Django Apps
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third-Party Apps
+    'rest_framework',
+    'corsheaders',
+    # Local Apps (Your project's apps)
     'common',
+    'account',
     'bstype',
     'asset',
     'architecture',
-    'rest_framework',
-    'corsheaders',
+    'salt',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +80,14 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
     'x-token',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+AUTH_USER_MODEL = 'account.User'
 
 ROOT_URLCONF = 'tabops_api.urls'
 
@@ -150,3 +163,56 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'standard': {
+            'format': '%(levelname)s [ %(message)s] %(asctime)s %(pathname)s %(filename)s %(module)s %(funcName)s %(lineno)d'
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'standard'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/django.log',
+            'formatter': 'standard'
+        },
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+    },
+    'loggers': {
+        'default': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True
+        }
+    }
+}
+
+
+# Log
+DEFAULT_LOGGER = 'default'
+
+
+# Salt
+# SALT_API_URL = 'https://223.87.23.11:1559/'
+SALT_API_URL = 'https://10.3.32.69:1559/'
+SALT_USER = 'tabops'
+SALT_PASSWORD = 'tabops'
