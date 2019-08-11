@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     # Local Apps (Your project's apps)
     'common',
-    'account',
+    'users',
     'bstype',
     'asset',
     'architecture',
@@ -68,6 +68,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ORIGIN_WHITELIST = [
 #     "http://localhost:9527"
 # ]
+
 CORS_ALLOW_HEADERS = (
     'accept',
     'accept-encoding',
@@ -87,7 +88,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = 'account.User'
+# AUTH_USER_MODEL = 'account.User'
 
 ROOT_URLCONF = 'tabops_api.urls'
 
