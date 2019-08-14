@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 
-from common.serializer import ResponseModelViewSet
+from common.views import ResponseModelViewSet
 from bstype.models import Bussiness, Service
 from .serializer import BussinessSerializer, ServiceSerializer
 
@@ -21,7 +21,7 @@ class BussinessList(ListAPIView):
         return Response(response)
 
 
-class BussinessViewsets(ResponseModelViewSet):
+class BussinessViewSet(ResponseModelViewSet):
     serializer_class = BussinessSerializer
     model = Bussiness
 
@@ -51,7 +51,7 @@ class ServiceList(ListAPIView):
         return Response(response)
 
 
-class ServiceViewsets(ResponseModelViewSet):
+class ServiceViewSet(ResponseModelViewSet):
     serializer_class = ServiceSerializer
     model = Service
 
