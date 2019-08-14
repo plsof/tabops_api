@@ -1,4 +1,4 @@
-from common.serializer import ResponseModelViewSet
+from common.views import ResponseModelViewSet
 
 from ..models import Wtv
 from ..models import BImsBoot
