@@ -1,21 +1,27 @@
-from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from django.contrib.auth.hashers import make_password
+from common.views import ResponseModelViewSet
 from django.contrib.auth.models import User
+# from rest_framework import status
 
 from .serializers import UserSerializer
 
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
+class UserViewSet(ResponseModelViewSet):
     serializer_class = UserSerializer
+    model = User
 
+    def get_queryset(self):
+        queryset = User.objects.all()
+        return queryset
 
-class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserCreateAPIView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['password'] = make_password(serializer.validated_data['password'])
+        self.perform_create(serializer)
+        self.response_format["data"] = serializer.data
+        self.response_format["code"] = 0
+        # headers = self.get_success_headers(serializer.data)
+        # return Response(self.response_format, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(self.response_format)

@@ -1,12 +1,9 @@
-from django.urls import path
+from django.urls import path, re_path
 
-from .views import UserList
-from .views import UserDetail
-from .views import UserCreateAPIView
-
+from .views import UserViewSet
 
 urlpatterns = [
-    path('', UserList.as_view()),
-    path(r'<int:pk>/', UserDetail.as_view()),
-    path(r'register/', UserCreateAPIView.as_view()),
+    path(r'register/', UserViewSet.as_view({"post": "create"})),
+    path(r'info/', UserViewSet.as_view({"get": "list"})),
+    re_path(r'^info/(?P<pk>[0-9]+)$', UserViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
 ]
