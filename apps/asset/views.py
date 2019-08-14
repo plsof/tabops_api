@@ -1,8 +1,7 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-# from rest_framework.permissions import IsAuthenticated
 
-from common.serializer import ResponseModelViewSet
+from common.views import ResponseModelViewSet
 from .models import Idc
 from .models import Host
 from .serializer import IdcSerializer
@@ -11,7 +10,6 @@ from .serializer import HostSerializer
 
 # 获取全部数据，不分页
 class IdcList(ListAPIView):
-    # permission_classes = (IsAuthenticated,)
 
     def list(self, request):
         queryset = Idc.objects.all()
@@ -25,7 +23,7 @@ class IdcList(ListAPIView):
         return Response(response)
 
 
-class IdcViewsets(ResponseModelViewSet):
+class IdcViewSet(ResponseModelViewSet):
     serializer_class = IdcSerializer
     model = Idc
 
@@ -37,7 +35,7 @@ class IdcViewsets(ResponseModelViewSet):
         return queryset
 
 
-class HostViewsets(ResponseModelViewSet):
+class HostViewSet(ResponseModelViewSet):
     serializer_class = HostSerializer
     model = Host
 
