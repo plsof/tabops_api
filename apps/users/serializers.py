@@ -6,5 +6,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        # fields = ['id', 'username', 'password']
         fields = '__all__'
+        # exclude = ('date_joined', ) # 去掉date_joined为啥update不生效
+
+    # def update(self, instance, validated_data):
+    #     instance.set_password(validated_data['password'])
+    #     instance.save()
+    #     return instance
