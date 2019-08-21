@@ -55,7 +55,6 @@ class ResponseModelViewSet(ModelViewSet):
         response_data = super(ResponseModelViewSet, self).update(request, *args, **kwargs)
         self.response_format["data"] = response_data.data
         self.response_format["code"] = 0
-
         return Response(self.response_format)
 
     def destroy(self, request, *args, **kwargs):
