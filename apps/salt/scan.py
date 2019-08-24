@@ -1,7 +1,8 @@
 import re
+import json
 import logging
 from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 
 from tabops_api.settings import DEFAULT_LOGGER, SALT_API_URL
 from salt.salt_http_api import salt_api_token
@@ -11,21 +12,21 @@ from asset.models import Host
 logger = logging.getLogger(DEFAULT_LOGGER)
 
 
-# @csrf_exempt
-def scan_host(request):
+@csrf_exempt
+def scan_minion(request):
     """
-    扫描客户端信息
+    扫描salt客户端信息
     :return:
     """
-    if request.method == 'GET':
-        response = {
-            'code': 0,
-            'data': [],
-            'msg': '扫描完成',
-            'total': 0
-        }
-        # tgt = request.POST.get('saltid', '')
-        tgt = request.GET.get('saltid')
+    response = {
+        'code': 0,
+        'data': [],
+        'msg': '扫描完成',
+        'total': 0
+    }
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        tgt = body['saltid']
         if not re.match('SCYD-', tgt):
             response['code'] = 1
             response['msg'] = 'saltid不合规'
@@ -121,6 +122,20 @@ def scan_host(request):
                 entity.m_status = m_status
                 entity.roles = result[host]["roles"][0] if 'roles' in result[host] else ""
                 entity.save()
-
+                response['data'] = {"idc": entity.idc,
+                                    "lan_ip": entity.lan_ip,
+                                    "man_ip": entity.man_ip,
+                                    "platform": entity.platform,
+                                    "hostname": entity.hostname,
+                                    "salt_version": entity.salt_version,
+                                    "os_finger": entity.os_finger,
+                                    "serial_number": entity.serial_number,
+                                    "num_cpus": entity.num_cpus,
+                                    "mem_total": entity.mem_total,
+                                    "roles": entity.roles,
+                                    "minion_status": "Up"}
         response['total'] = len(result)
         return JsonResponse(response)
+    response['code'] = 1
+    response['msg'] = '请求方法不对'
+    return JsonResponse(response)

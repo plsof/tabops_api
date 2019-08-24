@@ -22,5 +22,6 @@ urlpatterns = [
     path(r'bstype/', include('bstype.urls')),
     path(r'asset/', include('asset.urls')),
     path(r'architecture/', include('architecture.urls')),
+    path(r'salt/', include('salt.urls')),
     path(r'zabbix/', include('zabbix.urls'))
 ]
