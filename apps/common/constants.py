@@ -1,6 +1,6 @@
 MINION_STATUS = (
-    (0, 'Up'),
-    (1, 'Down'),
+    (0, 'Down'),
+    (1, 'Up'),
     (2, 'None')
 )
 
@@ -17,7 +17,7 @@ ISP = (
 
 # zabbix状态
 Z_STATUS = (
-    (0, 'UP'),
-    (1, 'Down'),
+    (0, 'Down'),
+    (1, 'Up'),
     (2, 'None')
 )
