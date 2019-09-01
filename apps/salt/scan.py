@@ -41,10 +41,10 @@ def scan_minion(request):
 
         #  for scan all
         if tgt == 'SCYD-*':
-            Host.objects.filter(m_status=0).update(m_status=1)
+            Host.objects.filter(m_status=1).update(m_status=0)
 
         for host in result:
-            m_status = 0
+            m_status = 1
             result[host]["ipv4"].remove('127.0.0.1')
             idc = None
             # lan_ip 不能为空
