@@ -111,3 +111,43 @@ class NDms(Base):
         ordering = ['idc', 'service', 'ip']
         verbose_name = 'NDMS'
         verbose_name_plural = verbose_name
+
+
+class TOS(Base):
+
+    class Meta:
+        ordering = ['idc', 'service', 'ip']
+        verbose_name = 'TOS'
+        verbose_name_plural = verbose_name
+
+
+class UCS(Base):
+
+    class Meta:
+        ordering = ['idc', 'service', 'ip']
+        verbose_name = 'UCS'
+        verbose_name_plural = verbose_name
+
+
+class MGS(Base):
+
+    class Meta:
+        ordering = ['idc', 'service', 'ip']
+        verbose_name = 'MGS'
+        verbose_name_plural = verbose_name
+
+
+class NMC(Base):
+
+    class Meta:
+        ordering = ['idc', 'service', 'ip']
+        verbose_name = 'NMC'
+        verbose_name_plural = verbose_name
+
+
+class UBS(Base):
+
+    class Meta:
+        ordering = ['idc', 'service', 'ip']
+        verbose_name = 'UBS'
+        verbose_name_plural = verbose_name

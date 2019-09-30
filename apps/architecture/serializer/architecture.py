@@ -14,6 +14,11 @@ from ..models import MScreen
 from ..models import DMS2
 from ..models import XMpp
 from ..models import NDms
+from ..models import TOS
+from ..models import UCS
+from ..models import MGS
+from ..models import NMC
+from ..models import UBS
 
 
 class WtvSerializer(BaseSerializer):
@@ -111,4 +116,39 @@ class NDmsSerializer(BaseSerializer):
 
     class Meta:
         model = NDms
+        fields = '__all__'
+
+
+class TOSSerializer(BaseSerializer):
+
+    class Meta:
+        model = TOS
+        fields = '__all__'
+
+
+class UCSSerializer(BaseSerializer):
+
+    class Meta:
+        model = UCS
+        fields = '__all__'
+
+
+class MGSSerializer(BaseSerializer):
+
+    class Meta:
+        model = MGS
+        fields = '__all__'
+
+
+class NMCSerializer(BaseSerializer):
+
+    class Meta:
+        model = NMC
+        fields = '__all__'
+
+
+class UBSSerializer(BaseSerializer):
+
+    class Meta:
+        model = UBS
         fields = '__all__'

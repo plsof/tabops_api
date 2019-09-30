@@ -12,3 +12,8 @@ from .architecture import MScreen
 from .architecture import DMS2
 from .architecture import XMpp
 from .architecture import NDms
+from .architecture import TOS
+from .architecture import UCS
+from .architecture import MGS
+from .architecture import NMC
+from .architecture import UBS

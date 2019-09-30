@@ -4,6 +4,7 @@ import logging
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from asset.models import Host
 from architecture.models import Wtv
 from architecture.models import BImsBoot
 from architecture.models import BImsPanel
@@ -107,6 +108,66 @@ def refresh_port(request):
         elif status == 2:
             z_status = 'None'
         response['data'] = {'z_status': z_status}
+        return JsonResponse(response)
+    response['code'] = 1
+    response['msg'] = '请求方法不对'
+    return JsonResponse(response)
+
+
+@csrf_exempt
+def refresh_agent(request):
+    """
+    刷新agent监控
+    :return:
+    """
+    response = {
+        'code': 0,
+        'data': [],
+        'msg': '刷新完成',
+        'total': 0
+    }
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        aid = body['id']
+        queryset = Host.objects.filter(id=aid)
+        values = queryset.values('lan_ip')[0]
+        if values:
+            token = zabbix_token()
+            headers = {'Content-Type': 'application/json'}
+            payload = {
+                "jsonrpc": "2.0",
+                "method": "item.get",
+                "params": {
+                    "output": "extend",
+                    "host": values['lan_ip'],
+                    "search": {
+                        "key_": "agent.ping"
+                    }
+                },
+                "auth": token,
+                "id": 1
+            }
+            try:
+                ret = requests.post(ZABBIX_API_URL, data=json.dumps(payload), headers=headers, timeout=5, verify=False)
+            except requests.ConnectionError as e:
+                logging.error(e)
+                return 1
+            res = json.loads(ret.text)
+            if res["result"]:
+                z_status = res["result"][0]["lastvalue"]
+            else:
+                z_status = 2
+        else:
+            z_status = 2
+        z_status = int(z_status)
+        queryset.update(z_status=z_status)
+        if z_status == 0:
+            zabbix_status = 'Down'
+        elif z_status == 1:
+            zabbix_status = 'Up'
+        elif z_status == 2:
+            zabbix_status = 'None'
+        response['data'] = {'zabbix_status': zabbix_status}
         return JsonResponse(response)
     response['code'] = 1
     response['msg'] = '请求方法不对'

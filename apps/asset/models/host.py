@@ -15,7 +15,7 @@ class Host(BaseModel):
     # rack = models.ForeignKey(Rack, on_delete=models.CASCADE, blank=True, null=True, verbose_name="机架")
     # s_host = models.ForeignKey(SHost, on_delete=models.CASCADE, blank=True, null=True, verbose_name='宿主机')
     salt_id = models.CharField(max_length=255, blank=True, null=True, verbose_name="SaltID")
-    lan_ip = models.GenericIPAddressField(unique=True, protocol='IPv4', verbose_name="内网IP地址")
+    lan_ip = models.GenericIPAddressField(protocol='IPv4', verbose_name="内网IP地址")  # 不能设置为unique 会有重复lan_ip(salt-minion配置错误)
     man_ip = models.GenericIPAddressField(blank=True, null=True, protocol='IPv4', verbose_name="管理IP地址")
     kernel = models.CharField(max_length=255, blank=True, null=True, verbose_name="系统内核")
     kernel_release = models.CharField(max_length=255, blank=True, null=True, verbose_name="系统内核版本")

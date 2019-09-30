@@ -14,6 +14,11 @@ from .views import MScreenViewSet
 from .views import DMS2ViewSet
 from .views import XMppViewSet
 from .views import NDmsViewSet
+from .views import TOSViewSet
+from .views import UCSViewSet
+from .views import MGSViewSet
+from .views import NMCViewSet
+from .views import UBSViewSet
 
 urlpatterns = [
     path(r'wtv/', WtvViewSet.as_view({"get": "list", "post": "create"})),
@@ -46,4 +51,14 @@ urlpatterns = [
     re_path(r'^xmpp/(?P<pk>[0-9]+)$', XMppViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
     path(r'ndms/', NDmsViewSet.as_view({"get": "list", "post": "create"})),
     re_path(r'^ndms/(?P<pk>[0-9]+)$', NDmsViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
+    path(r'tos/', TOSViewSet.as_view({"get": "list", "post": "create"})),
+    re_path(r'^tos/(?P<pk>[0-9]+)$', TOSViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
+    path(r'ucs/', UCSViewSet.as_view({"get": "list", "post": "create"})),
+    re_path(r'^ucs/(?P<pk>[0-9]+)$', UCSViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
+    path(r'mgs/', MGSViewSet.as_view({"get": "list", "post": "create"})),
+    re_path(r'^mgs/(?P<pk>[0-9]+)$', MGSViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
+    path(r'nmc/', NMCViewSet.as_view({"get": "list", "post": "create"})),
+    re_path(r'^nmc/(?P<pk>[0-9]+)$', NMCViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
+    path(r'ubs/', UBSViewSet.as_view({"get": "list", "post": "create"})),
+    re_path(r'^ubs/(?P<pk>[0-9]+)$', UBSViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
 ]

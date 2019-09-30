@@ -12,3 +12,8 @@ from .architecture import MScreenSerializer
 from .architecture import DMS2Serializer
 from .architecture import XMppSerializer
 from .architecture import NDmsSerializer
+from .architecture import TOSSerializer
+from .architecture import UCSSerializer
+from .architecture import MGSSerializer
+from .architecture import NMCSerializer
+from .architecture import UBSSerializer

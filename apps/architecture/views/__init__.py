@@ -12,3 +12,8 @@ from .architecture import MScreenViewSet
 from .architecture import DMS2ViewSet
 from .architecture import XMppViewSet
 from .architecture import NDmsViewSet
+from .architecture import TOSViewSet
+from .architecture import UCSViewSet
+from .architecture import MGSViewSet
+from .architecture import NMCViewSet
+from .architecture import UBSViewSet
