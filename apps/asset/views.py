@@ -1,26 +1,8 @@
-from rest_framework.generics import ListAPIView
-from rest_framework.response import Response
-
 from common.views import ResponseModelViewSet
 from .models import Idc
 from .models import Host
 from .serializer import IdcSerializer
 from .serializer import HostSerializer
-
-
-# 获取全部数据，不分页
-class IdcList(ListAPIView):
-
-    def list(self, request):
-        queryset = Idc.objects.all()
-        response = {
-            'code': 0,
-            'data': [],
-            'msg': 'success'
-        }
-        serializer = IdcSerializer(queryset, many=True)
-        response['data'] = serializer.data
-        return Response(response)
 
 
 class IdcViewSet(ResponseModelViewSet):
