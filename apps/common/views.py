@@ -27,10 +27,13 @@ class ResponseModelViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         response_data = super(ResponseModelViewSet, self).list(request, *args, **kwargs)
-        page_obj = MyPageNumber()
-        page_data = page_obj.paginate_queryset(queryset=response_data.data, request=request, view=self)
-        # self.response_format["data"] = response_data.data
-        self.response_format["data"] = page_data
+        page = self.request.query_params.get('page', None)
+        if page is not None and page is not '':
+            page_obj = MyPageNumber()
+            page_data = page_obj.paginate_queryset(queryset=response_data.data, request=request, view=self)
+            self.response_format["data"] = page_data
+        else:
+            self.response_format["data"] = response_data.data
         self.response_format["total"] = len(response_data.data)
         self.response_format["code"] = 0
         if not response_data.data:
