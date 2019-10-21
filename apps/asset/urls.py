@@ -1,11 +1,13 @@
-from django.urls import path, re_path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from .views import IdcViewSet
-from .views import HostViewSet
+from asset import views
+
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'idc', views.IdcViewSet, basename='Idc')
+router.register(r'host', views.HostViewSet, basename='Host')
 
 urlpatterns = [
-    path(r'idc/', IdcViewSet.as_view({"get": "list", "post": "create"})),
-    re_path(r'^idc/(?P<pk>[0-9]+)$', IdcViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
-    path(r'host/', HostViewSet.as_view({"get": "list", "post": "create"})),
-    re_path(r'^host/(?P<pk>[0-9]+)$', HostViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
+    path('', include(router.urls)),
 ]

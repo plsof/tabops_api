@@ -1,11 +1,14 @@
-from django.urls import path, re_path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from .views import BussinessViewSet, ServiceViewSet
+from bstype import views
 
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'bussiness', views.BussinessViewSet, basename='Bussiness')
+router.register(r'service', views.ServiceViewSet, basename='Service')
 
 urlpatterns = [
-    path(r'bussiness/', BussinessViewSet.as_view({"get": "list", "post": "create"})),
-    re_path(r'^bussiness/(?P<pk>[0-9]+)$', BussinessViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
-    path(r'service/', ServiceViewSet.as_view({"get": "list", "post": "create"})),
-    re_path(r'^service/(?P<pk>[0-9]+)$', ServiceViewSet.as_view({"put": "update", "patch": "partial_update", "delete": "destroy"})),
+    path('', include(router.urls)),
 ]
+
