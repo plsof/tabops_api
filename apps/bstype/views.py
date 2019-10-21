@@ -5,7 +5,6 @@ from .serializer import BussinessSerializer, ServiceSerializer
 
 class BussinessViewSet(ResponseModelViewSet):
     serializer_class = BussinessSerializer
-    model = Bussiness
 
     def get_queryset(self):
         queryset = Bussiness.objects.all()
@@ -17,7 +16,6 @@ class BussinessViewSet(ResponseModelViewSet):
 
 class ServiceViewSet(ResponseModelViewSet):
     serializer_class = ServiceSerializer
-    model = Service
 
     def get_queryset(self):
         queryset = Service.objects.all()

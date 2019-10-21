@@ -9,7 +9,6 @@ from .serializers import UserSerializer
 
 class UserViewSet(ResponseModelViewSet):
     serializer_class = UserSerializer
-    model = User
 
     def get_queryset(self):
         queryset = User.objects.all()

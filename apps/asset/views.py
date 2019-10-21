@@ -7,7 +7,6 @@ from .serializer import HostSerializer
 
 class IdcViewSet(ResponseModelViewSet):
     serializer_class = IdcSerializer
-    model = Idc
 
     def get_queryset(self):
         queryset = Idc.objects.all()
@@ -19,7 +18,6 @@ class IdcViewSet(ResponseModelViewSet):
 
 class HostViewSet(ResponseModelViewSet):
     serializer_class = HostSerializer
-    model = Host
 
     def get_queryset(self):
         queryset = Host.objects.all()
