@@ -15,6 +15,8 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -23,5 +25,8 @@ urlpatterns = [
     path(r'api/asset/', include('asset.urls')),
     path(r'api/architecture/', include('architecture.urls')),
     path(r'api/salt/', include('salt.urls')),
-    path(r'api/zabbix/', include('zabbix.urls'))
+    path(r'api/zabbix/', include('zabbix.urls')),
+    path(r'api/upload/', include('upload.urls')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
