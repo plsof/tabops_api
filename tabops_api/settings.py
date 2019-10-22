@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import sys
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     'asset',
     'architecture',
     'salt',
+    'zabbix',
+    'upload'
 ]
 
 MIDDLEWARE = [
@@ -79,16 +82,42 @@ CORS_ALLOW_HEADERS = (
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
-    'x-token',
+    # 'x-token',
 )
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
-# AUTH_USER_MODEL = 'account.User'
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=0.5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    # 'USER_ID_FIELD': 'id',
+    # 'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+
+# 将拓展的User替换系统默认的auth_user 模型
+# AUTH_USER_MODEL = "users.UserProfile"
 
 ROOT_URLCONF = 'tabops_api.urls'
 
@@ -121,8 +150,21 @@ DATABASES = {
         'NAME': 'tabops',
         'USER': 'root',
         'PASSWORD': 'kobe5824',
-        'HOST': '127.0.0.1',
+        'HOST': 'db',
         'PORT': '3306',
+        'CONN_MAX_AGE': 300,
+    }
+}
+
+
+# redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
 
@@ -151,7 +193,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -164,6 +206,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# upload image
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 LOGGING = {
@@ -213,7 +259,16 @@ DEFAULT_LOGGER = 'default'
 
 
 # Salt
-# SALT_API_URL = 'https://223.87.23.11:1559/'
-SALT_API_URL = 'https://10.3.32.69:1559/'
+SALT_API_URL = 'https://10.25.172.67:1559/'
 SALT_USER = 'tabops'
 SALT_PASSWORD = 'tabops'
+
+# Zabbix
+ZABBIX_API_URL = 'https://172.188.3.2/zabbix/api_jsonrpc.php'
+ZABBIX_USER = 'zxyw'
+ZABBIX_PASSWORD = 'zxyw!yst2#^'
+
+# Celery
+CELERY_BROKER_URL = 'redis://redis:6379/1'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/2'
+CELERY_RESULT_SERIALIZER = 'json'

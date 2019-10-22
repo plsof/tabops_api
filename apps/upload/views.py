@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.permissions import IsAdminUser
 
 from common.views import ResponseInfo, MyPageNumber
 from .models import File
@@ -8,6 +9,7 @@ from .serializers import FileSerializer
 
 
 class FileUploadView(APIView):
+    permission_classes = [IsAdminUser]
 
     def __init__(self, **kwargs):
         self.response_format = ResponseInfo().response
@@ -40,6 +42,7 @@ class FileUploadView(APIView):
 
 
 class FileDetailView(APIView):
+    permission_classes = [IsAdminUser]
 
     def get_object(self, pk):
         try:
