@@ -3,8 +3,10 @@ from django.contrib.auth.hashers import make_password
 from common.views import ResponseModelViewSet
 from django.contrib.auth.models import User
 from rest_framework import status
+from django.http import Http404
+from rest_framework.generics import UpdateAPIView
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, ChangePasswordSerializer
 
 
 class UserViewSet(ResponseModelViewSet):
@@ -38,3 +40,31 @@ class UserViewSet(ResponseModelViewSet):
         self.response_format["code"] = 0
         headers = self.get_success_headers(serializer.data)
         return Response(self.response_format, status=status.HTTP_206_PARTIAL_CONTENT, headers=headers)
+
+
+class ChangePasswordView(UpdateAPIView):
+    serializer_class = ChangePasswordSerializer
+    # model = User
+
+    def get_object(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise Http404
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            object = self.get_object(serializer.data.get("username"))
+            # Check old password
+            if not object.check_password(serializer.data.get("old_password")):
+                return Response({"msg": "旧密码错误"}, status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            newpass = serializer.data.get("new_password")
+            if len(newpass) < 8:
+                return Response({"msg": "新密码长度小于8"}, status=status.HTTP_400_BAD_REQUEST)
+            object.set_password(serializer.data.get("new_password"))
+            object.save()
+            return Response({"msg": "密码更新成功"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .views import UserViewSet
+from .views import UserViewSet, ChangePasswordView
 
 urlpatterns = [
     path(r'login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path(r'info/', UserViewSet.as_view({"get": "list"})),
     # re_path(r'^update/(?P<pk>[0-9]+)$', UserViewSet.as_view({"put": "update"})),
     re_path(r'^info/(?P<pk>[0-9]+)$', UserViewSet.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"})),
+    path(r'changepasswd/', ChangePasswordView.as_view()),
 ]
