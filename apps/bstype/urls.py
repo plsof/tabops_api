@@ -11,4 +11,3 @@ router.register(r'service', views.ServiceViewSet, basename='Service')
 urlpatterns = [
     path('', include(router.urls)),
 ]
-

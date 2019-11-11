@@ -17,6 +17,9 @@ Including another URLconf
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.documentation import include_docs_urls
+API_TITLE = 'API title'
+API_DESCRIPTION = '...'
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -27,6 +30,7 @@ urlpatterns = [
     path(r'api/salt/', include('salt.urls')),
     path(r'api/zabbix/', include('zabbix.urls')),
     path(r'api/upload/', include('upload.urls')),
+    path(r'api/docs/', include_docs_urls(title=API_TITLE, description=API_DESCRIPTION))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
