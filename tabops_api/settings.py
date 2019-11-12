@@ -87,7 +87,7 @@ CORS_ALLOW_HEADERS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -265,7 +265,8 @@ SALT_USER = 'tabops'
 SALT_PASSWORD = 'tabops'
 
 # Zabbix
-ZABBIX_API_URL = 'https://172.188.3.2/zabbix/api_jsonrpc.php'
+ZABBIX_API_URL_SOUTH = 'https://172.188.3.2/zabbix/api_jsonrpc.php'
+ZABBIX_API_URL_WEST = 'https://10.3.32.68/zabbix/api_jsonrpc.php'
 ZABBIX_USER = 'zxyw'
 ZABBIX_PASSWORD = 'zxyw!yst2#^'
 

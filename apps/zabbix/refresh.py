@@ -5,22 +5,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from asset.models import Host
-from architecture.models import Wtv
-from architecture.models import BImsBoot
-from architecture.models import BImsPanel
-from architecture.models import Tms
-from architecture.models import Epg
-from architecture.models import Search
-from architecture.models import Pic
-from architecture.models import Ppl
-from architecture.models import CosEpg
-from architecture.models import Uic
-from architecture.models import MScreen
-from architecture.models import DMS2
-from architecture.models import XMpp
-from architecture.models import NDms
-from .zabbix_token import zabbix_token
-from tabops_api.settings import DEFAULT_LOGGER, ZABBIX_API_URL
+from architecture import models
+from .zabbix_api import zabbix_token_south, zabbix_token_west
+from tabops_api.settings import DEFAULT_LOGGER, ZABBIX_API_URL_SOUTH, ZABBIX_API_URL_WEST
 
 logger = logging.getLogger(DEFAULT_LOGGER)
 
@@ -42,36 +29,51 @@ def refresh_port(request):
         db = body['db']
         aid = body['id']
         if db == 'Wtv':
-            queryset = Wtv.objects.filter(id=aid)
+            queryset = models.Wtv.objects.filter(id=aid)
         elif db == 'BImsBoot':
-            queryset = BImsBoot.objects.filter(id=aid)
+            queryset = models.BImsBoot.objects.filter(id=aid)
         elif db == 'BImsPanel':
-            queryset = BImsPanel.objects.filter(id=aid)
+            queryset = models.BImsPanel.objects.filter(id=aid)
         elif db == 'Tms':
-            queryset = Tms.objects.filter(id=aid)
+            queryset = models.Tms.objects.filter(id=aid)
         elif db == 'Epg':
-            queryset = Epg.objects.filter(id=aid)
+            queryset = models.Epg.objects.filter(id=aid)
         elif db == 'Search':
-            queryset = Search.objects.filter(id=aid)
+            queryset = models.Search.objects.filter(id=aid)
         elif db == 'Pic':
-            queryset = Pic.objects.filter(id=aid)
+            queryset = models.Pic.objects.filter(id=aid)
         elif db == 'Ppl':
-            queryset = Ppl.objects.filter(id=aid)
+            queryset = models.Ppl.objects.filter(id=aid)
         elif db == 'CosEpg':
-            queryset = CosEpg.objects.filter(id=aid)
+            queryset = models.CosEpg.objects.filter(id=aid)
         elif db == 'Uic':
-            queryset = Uic.objects.filter(id=aid)
+            queryset = models.Uic.objects.filter(id=aid)
         elif db == 'MScreen':
-            queryset = MScreen.objects.filter(id=aid)
+            queryset = models.MScreen.objects.filter(id=aid)
         elif db == 'DMS2':
-            queryset = DMS2.objects.filter(id=aid)
+            queryset = models.DMS2.objects.filter(id=aid)
         elif db == 'XMpp':
-            queryset = XMpp.objects.filter(id=aid)
+            queryset = models.XMpp.objects.filter(id=aid)
         elif db == 'NDms':
-            queryset = NDms.objects.filter(id=aid)
+            queryset = models.NDms.objects.filter(id=aid)
+        elif db == 'TOS':
+            queryset = models.TOS.objects.filter(id=aid)
+        elif db == 'UCS':
+            queryset = models.UCS.objects.filter(id=aid)
+        elif db == 'MGS':
+            queryset = models.MGS.objects.filter(id=aid)
+        elif db == 'NMC':
+            queryset = models.NMC.objects.filter(id=aid)
+        elif db == 'UBS':
+            queryset = models.UBS.objects.filter(id=aid)
         values = queryset.values('ip', 'port')[0]
+        if "10.1" in values['ip'] or "10.3" in values['ip']:
+            zabbix_api_url = ZABBIX_API_URL_WEST
+            token = zabbix_token_west()
+        if "10.25" in values['ip'] or "172.188" in values['ip']:
+            zabbix_api_url = ZABBIX_API_URL_SOUTH
+            token = zabbix_token_south()
         if values['port']:
-            token = zabbix_token()
             port = "net.tcp.service[tcp,,%s]" % values['port']
             headers = {'Content-Type': 'application/json'}
             payload = {
@@ -88,7 +90,7 @@ def refresh_port(request):
                 "id": 1
             }
             try:
-                ret = requests.post(ZABBIX_API_URL, data=json.dumps(payload), headers=headers, timeout=5, verify=False)
+                ret = requests.post(zabbix_api_url, data=json.dumps(payload), headers=headers, timeout=5, verify=False)
             except requests.ConnectionError as e:
                 logging.error(e)
                 return 1
@@ -131,8 +133,13 @@ def refresh_agent(request):
         aid = body['id']
         queryset = Host.objects.filter(id=aid)
         values = queryset.values('lan_ip')[0]
+        if "10.1" in values['lan_ip'] or "10.3" in values['lan_ip']:
+            zabbix_api_url = ZABBIX_API_URL_WEST
+            token = zabbix_token_west()
+        if "10.25" in values['lan_ip'] or "172.188" in values['lan_ip']:
+            zabbix_api_url = ZABBIX_API_URL_SOUTH
+            token = zabbix_token_south()
         if values:
-            token = zabbix_token()
             headers = {'Content-Type': 'application/json'}
             payload = {
                 "jsonrpc": "2.0",
@@ -148,7 +155,7 @@ def refresh_agent(request):
                 "id": 1
             }
             try:
-                ret = requests.post(ZABBIX_API_URL, data=json.dumps(payload), headers=headers, timeout=5, verify=False)
+                ret = requests.post(zabbix_api_url, data=json.dumps(payload), headers=headers, timeout=5, verify=False)
             except requests.ConnectionError as e:
                 logging.error(e)
                 return 1
