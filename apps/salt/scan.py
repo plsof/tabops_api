@@ -1,12 +1,13 @@
 import re
 import json
 import logging
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from tabops_api.settings import DEFAULT_LOGGER, SALT_API_URL
+from tabops_api.settings import DEFAULT_LOGGER, SALT_API_URL_SOUTH, SALT_API_URL_WEST
 from salt.salt_http_api import salt_api_token
-from salt.salt_token_id import token_id
+from salt.salt_token_id import token_get
 from asset.models import Host
 
 logger = logging.getLogger(DEFAULT_LOGGER)
@@ -31,23 +32,53 @@ def scan_minion(request):
             response['code'] = 1
             response['msg'] = 'saltid不合规'
             return JsonResponse(response)
+        # token = ''
+        if "SCYD-10.1" in tgt or "SCYD-10.3" in tgt or "SCYD-west" in tgt:
+            salt_api_url = SALT_API_URL_WEST
+            token = token_get("s_west", salt_api_url)
+        if "SCYD-10.25" in tgt or "SCYD-172.188" in tgt or "SCYD-south" in tgt:
+            salt_api_url = SALT_API_URL_SOUTH
+            token = token_get("s_south", salt_api_url)
         logger.info('获取Minion主机资产信息')
         # result = salt_api_token({'fun': 'grains.items', 'tgt': tgt, 'expr_form': 'list'},
         #                         SALT_API_URL, {'X-Auth-Token': token_id()}).CmdRun()['return'][0]
         result = salt_api_token({'fun': 'grains.items', 'tgt': tgt},
-                                SALT_API_URL, {'X-Auth-Token': token_id()}).CmdRun()['return'][0]
+                                salt_api_url, {'X-Auth-Token': token}).CmdRun()['return'][0]
         logger.info('扫描Minion数量为[%s]', len(result))
         logger.debug('Minions资产信息[%s]' % result)
 
-        #  for scan all
-        if tgt == 'SCYD-*':
-            Host.objects.filter(m_status=1).update(m_status=0)
+        con = Q()
+        #  for scan south
+        if tgt == 'SCYD-south':
+            q1 = Q()
+            q1.connector = 'OR'
+            q1.children.append(('idc', '109'))
+            q1.children.append(('idc', '111'))
+            q1.children.append(('idc', '210'))
+            q2 = Q()
+            q2.connector = 'OR'
+            q2.children.append(('m_status', 1))
+            con.add(q1, 'AND')
+            con.add(q2, 'AND')
+            Host.objects.filter(con).update(m_status=0)
+        #  for scan west
+        if tgt == 'SCYD-west':
+            q1 = Q()
+            q1.connector = 'OR'
+            q1.children.append(('idc', '301'))
+            q1.children.append(('idc', '601'))
+            q2 = Q()
+            q2.connector = 'OR'
+            q2.children.append(('m_status', 1))
+            con.add(q1, 'AND')
+            con.add(q2, 'AND')
+            Host.objects.filter(con).update(m_status=0)
 
         for host in result:
             m_status = 1
             result[host]["ipv4"].remove('127.0.0.1')
             idc = None
-            # lan_ip 不能为空
+            # lan_ip字段不能为空 models.py里面设置
             lan_ip = '192.168.1.2'
             man_ip = None
             for ip in result[host]["ipv4"][::-1]:
@@ -60,14 +91,27 @@ def scan_minion(request):
                 elif "172.188.3" in ip:
                     idc = '210'
                     lan_ip = ip
-                # 109机房管理IP
-                if "10.25.178" in ip or "10.110.70" in ip:
+                if "10.1.32" in ip or "10.3.32" in ip:
+                    idc = '301'
+                    lan_ip = ip
+                elif "10.1.33" in ip or "10.3.33" in ip:
+                    idc = '601'
+                    lan_ip = ip
+                # # 109机房管理IP
+                # if "10.25.178" in ip or "10.110.70" in ip:
+                #     man_ip = ip
+                # # 111机房管理IP
+                # elif "10.25.177" in ip or "10.110.72" in ip:
+                #     man_ip = ip
+                # # 210机房管理IP
+                # elif "10.110.73" in ip:
+                #     man_ip = ip
+                # # 西区服务器管理IP
+                # 南区管理IP 109机房10.25.178.0, 10.110.70.0  111机房10.25.177.0, 10.110.72.0  210机房10.110.73.0
+                if "10.25.178" in ip or "10.110.70" in ip or "10.25.177" in ip or "10.110.72" in ip or "10.110.73" in ip:
                     man_ip = ip
-                # 111机房管理IP
-                elif "10.25.177" in ip or "10.110.72" in ip:
-                    man_ip = ip
-                # 210机房管理IP
-                elif "10.110.73" in ip:
+                # 西区管理IP
+                if "10.25.179" in ip or "10.25.181" in ip or "10.25.182" in ip or "10.25.183" in ip:
                     man_ip = ip
 
             rs = Host.objects.filter(salt_id=host)
@@ -95,7 +139,7 @@ def scan_minion(request):
                               num_cpus=result[host]["num_cpus"] if 'num_cpus' in result[host] else 0,
                               m_status=m_status,
                               roles=result[host]["roles"][0] if 'roles' in result[host] else "",
-                              )
+                            )
                 device.save()
             else:
                 entity = rs[0]

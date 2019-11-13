@@ -260,7 +260,8 @@ DEFAULT_LOGGER = 'default'
 
 
 # Salt
-SALT_API_URL = 'https://10.25.172.67:1559/'
+SALT_API_URL_SOUTH = 'https://10.25.172.67:1559/'
+SALT_API_URL_WEST = 'https://10.3.32.69:1559/'
 SALT_USER = 'tabops'
 SALT_PASSWORD = 'tabops'
 
