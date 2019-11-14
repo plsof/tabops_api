@@ -1,7 +1,8 @@
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 
-from .scan import scan_minion
+from salt import views
 
 urlpatterns = [
-    path(r'scan/', scan_minion),
+    path(r'scan/', csrf_exempt(views.ScanMinion.as_view())),
 ]

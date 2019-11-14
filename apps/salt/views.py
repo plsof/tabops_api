@@ -3,9 +3,10 @@ import json
 import logging
 from django.db.models import Q
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import View
 
 from tabops_api.settings import DEFAULT_LOGGER, SALT_API_URL_SOUTH, SALT_API_URL_WEST
+from common.views import ResponseInfo
 from salt.salt_http_api import salt_api_token
 from salt.salt_token_id import token_get
 from asset.models import Host
@@ -13,25 +14,20 @@ from asset.models import Host
 logger = logging.getLogger(DEFAULT_LOGGER)
 
 
-@csrf_exempt
-def scan_minion(request):
+class ScanMinion(View):
     """
-    扫描salt客户端信息
-    :return:
+    salt扫描minions信息
     """
-    response = {
-        'code': 0,
-        'data': [],
-        'msg': '扫描完成',
-        'total': 0
-    }
-    if request.method == 'POST':
+    def __init__(self):
+        self.response_format = ResponseInfo().response
+
+    def post(self, request):
         body = json.loads(request.body)
         tgt = body['saltid']
         if not re.match('SCYD-', tgt):
-            response['code'] = 1
-            response['msg'] = 'saltid不合规'
-            return JsonResponse(response)
+            self.response_format['code'] = 1
+            self.response_format['msg'] = 'saltid不合规'
+            return JsonResponse(self.response_format)
         # token = ''
         if "SCYD-10.1" in tgt or "SCYD-10.3" in tgt or "SCYD-west" in tgt:
             salt_api_url = SALT_API_URL_WEST
@@ -97,20 +93,10 @@ def scan_minion(request):
                 elif "10.1.33" in ip or "10.3.33" in ip:
                     idc = '601'
                     lan_ip = ip
-                # # 109机房管理IP
-                # if "10.25.178" in ip or "10.110.70" in ip:
-                #     man_ip = ip
-                # # 111机房管理IP
-                # elif "10.25.177" in ip or "10.110.72" in ip:
-                #     man_ip = ip
-                # # 210机房管理IP
-                # elif "10.110.73" in ip:
-                #     man_ip = ip
-                # # 西区服务器管理IP
-                # 南区管理IP 109机房10.25.178.0, 10.110.70.0  111机房10.25.177.0, 10.110.72.0  210机房10.110.73.0
+                # 南区服务器管理IP 109机房10.25.178.0, 10.110.70.0  111机房10.25.177.0, 10.110.72.0  210机房10.110.73.0
                 if "10.25.178" in ip or "10.110.70" in ip or "10.25.177" in ip or "10.110.72" in ip or "10.110.73" in ip:
                     man_ip = ip
-                # 西区管理IP
+                # 西区服务器管理IP
                 if "10.25.179" in ip or "10.25.181" in ip or "10.25.182" in ip or "10.25.183" in ip:
                     man_ip = ip
 
@@ -166,20 +152,17 @@ def scan_minion(request):
                 entity.m_status = m_status
                 entity.roles = result[host]["roles"][0] if 'roles' in result[host] else ""
                 entity.save()
-                response['data'] = {"idc": entity.idc,
-                                    "lan_ip": entity.lan_ip,
-                                    "man_ip": entity.man_ip,
-                                    "platform": entity.platform,
-                                    "hostname": entity.hostname,
-                                    "salt_version": entity.salt_version,
-                                    "os_finger": entity.os_finger,
-                                    "serial_number": entity.serial_number,
-                                    "num_cpus": entity.num_cpus,
-                                    "mem_total": entity.mem_total,
-                                    "roles": entity.roles,
-                                    "minion_status": "Up"}
-        response['total'] = len(result)
-        return JsonResponse(response)
-    response['code'] = 1
-    response['msg'] = '请求方法不对'
-    return JsonResponse(response)
+                self.response_format['data'] = {"idc": entity.idc,
+                                                "lan_ip": entity.lan_ip,
+                                                "man_ip": entity.man_ip,
+                                                "platform": entity.platform,
+                                                "hostname": entity.hostname,
+                                                "salt_version": entity.salt_version,
+                                                "os_finger": entity.os_finger,
+                                                "serial_number": entity.serial_number,
+                                                "num_cpus": entity.num_cpus,
+                                                "mem_total": entity.mem_total,
+                                                "roles": entity.roles,
+                                                "minion_status": "Up"}
+        self.response_format['total'] = len(result)
+        return JsonResponse(self.response_format)
