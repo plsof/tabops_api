@@ -2,29 +2,41 @@ import json
 import requests
 import logging
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import View
 
 from asset.models import Host
 from architecture import models
-from .zabbix_api import zabbix_token_south, zabbix_token_west
+from zabbix.zabbix_api import token_get
+from common.views import ResponseInfo
 from tabops_api.settings import DEFAULT_LOGGER, ZABBIX_API_URL_SOUTH, ZABBIX_API_URL_WEST
 
 logger = logging.getLogger(DEFAULT_LOGGER)
 
+HEADERS = {'Content-Type': 'application/json'}
 
-@csrf_exempt
-def refresh_port(request):
+PAYLOAD = {
+    "jsonrpc": "2.0",
+    "method": "item.get",
+    "params": {
+        "output": "extend",
+        "host": '',
+        "search": {
+            "key_": ''
+        }
+    },
+    "auth": '',
+    "id": 1
+}
+
+
+class PortRefresh(View):
     """
     刷新端口监控
-    :return:
     """
-    response = {
-        'code': 0,
-        'data': [],
-        'msg': '刷新完成',
-        'total': 0
-    }
-    if request.method == 'POST':
+    def __init__(self):
+        self.response_format = ResponseInfo().response
+
+    def post(self, request):
         body = json.loads(request.body)
         db = body['db']
         aid = body['id']
@@ -69,28 +81,18 @@ def refresh_port(request):
         values = queryset.values('ip', 'port')[0]
         if "10.1" in values['ip'] or "10.3" in values['ip']:
             zabbix_api_url = ZABBIX_API_URL_WEST
-            token = zabbix_token_west()
+            token = token_get("z_token_west", zabbix_api_url)
         if "10.25" in values['ip'] or "172.188" in values['ip']:
             zabbix_api_url = ZABBIX_API_URL_SOUTH
-            token = zabbix_token_south()
+            token = token_get("z_token_south", zabbix_api_url)
+        # 只验证有端口的实例
         if values['port']:
             port = "net.tcp.service[tcp,,%s]" % values['port']
-            headers = {'Content-Type': 'application/json'}
-            payload = {
-                "jsonrpc": "2.0",
-                "method": "item.get",
-                "params": {
-                    "output": "extend",
-                    "host": values['ip'],
-                    "search": {
-                        "key_": port
-                    }
-                },
-                "auth": token,
-                "id": 1
-            }
+            PAYLOAD['params']['host'] = values['ip']
+            PAYLOAD['params']['search']['key_'] = port
+            PAYLOAD['auth'] = token
             try:
-                ret = requests.post(zabbix_api_url, data=json.dumps(payload), headers=headers, timeout=5, verify=False)
+                ret = requests.post(zabbix_api_url, data=json.dumps(PAYLOAD), headers=HEADERS, timeout=5, verify=False)
             except requests.ConnectionError as e:
                 logging.error(e)
                 return 1
@@ -109,53 +111,34 @@ def refresh_port(request):
             z_status = 'Up'
         elif status == 2:
             z_status = 'None'
-        response['data'] = {'z_status': z_status}
-        return JsonResponse(response)
-    response['code'] = 1
-    response['msg'] = '请求方法不对'
-    return JsonResponse(response)
+        self.response_format['data'] = {'z_status': z_status}
+        return JsonResponse(self.response_format)
 
 
-@csrf_exempt
-def refresh_agent(request):
+class AgentRefresh(View):
     """
     刷新agent监控
-    :return:
     """
-    response = {
-        'code': 0,
-        'data': [],
-        'msg': '刷新完成',
-        'total': 0
-    }
-    if request.method == 'POST':
+    def __init__(self):
+        self.response_format = ResponseInfo().response
+
+    def post(self, request):
         body = json.loads(request.body)
         aid = body['id']
         queryset = Host.objects.filter(id=aid)
         values = queryset.values('lan_ip')[0]
         if "10.1" in values['lan_ip'] or "10.3" in values['lan_ip']:
             zabbix_api_url = ZABBIX_API_URL_WEST
-            token = zabbix_token_west()
+            token = token_get("z_token_west", zabbix_api_url)
         if "10.25" in values['lan_ip'] or "172.188" in values['lan_ip']:
             zabbix_api_url = ZABBIX_API_URL_SOUTH
-            token = zabbix_token_south()
+            token = token_get("z_token_south", zabbix_api_url)
         if values:
-            headers = {'Content-Type': 'application/json'}
-            payload = {
-                "jsonrpc": "2.0",
-                "method": "item.get",
-                "params": {
-                    "output": "extend",
-                    "host": values['lan_ip'],
-                    "search": {
-                        "key_": "agent.ping"
-                    }
-                },
-                "auth": token,
-                "id": 1
-            }
+            PAYLOAD['params']['host'] = values['lan_ip']
+            PAYLOAD['params']['search']['key_'] = "agent.ping"
+            PAYLOAD['auth'] = token
             try:
-                ret = requests.post(zabbix_api_url, data=json.dumps(payload), headers=headers, timeout=5, verify=False)
+                ret = requests.post(zabbix_api_url, data=json.dumps(PAYLOAD), headers=HEADERS, timeout=5, verify=False)
             except requests.ConnectionError as e:
                 logging.error(e)
                 return 1
@@ -174,8 +157,5 @@ def refresh_agent(request):
             zabbix_status = 'Up'
         elif z_status == 2:
             zabbix_status = 'None'
-        response['data'] = {'zabbix_status': zabbix_status}
-        return JsonResponse(response)
-    response['code'] = 1
-    response['msg'] = '请求方法不对'
-    return JsonResponse(response)
+        self.response_format['data'] = {'zabbix_status': zabbix_status}
+        return JsonResponse(self.response_format)

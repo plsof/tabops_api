@@ -1,9 +1,9 @@
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 
-from .refresh import refresh_port
-from .refresh import refresh_agent
+from zabbix import refresh
 
 urlpatterns = [
-    path(r'refresh/port/', refresh_port),
-    path(r'refresh/agent/', refresh_agent)
+    path(r'refresh/port/', csrf_exempt(refresh.PortRefresh.as_view())),
+    path(r'refresh/agent/', csrf_exempt(refresh.AgentRefresh.as_view()))
 ]
