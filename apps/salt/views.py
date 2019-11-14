@@ -29,23 +29,16 @@ class ScanMinion(View):
             self.response_format['msg'] = 'saltid不合规'
             return JsonResponse(self.response_format)
         # token = ''
-        if "SCYD-10.1" in tgt or "SCYD-10.3" in tgt or "SCYD-west" in tgt:
+        if "SCYD-10.1" in tgt or "SCYD-10.3" in tgt or "SCYD-west" in tgt or "SCYD-117" in tgt:
             salt_api_url = SALT_API_URL_WEST
             token = token_get("s_west", salt_api_url)
         if "SCYD-10.25" in tgt or "SCYD-172.188" in tgt or "SCYD-south" in tgt:
             salt_api_url = SALT_API_URL_SOUTH
             token = token_get("s_south", salt_api_url)
-        logger.info('获取Minion主机资产信息')
-        # result = salt_api_token({'fun': 'grains.items', 'tgt': tgt, 'expr_form': 'list'},
-        #                         SALT_API_URL, {'X-Auth-Token': token_id()}).CmdRun()['return'][0]
-        result = salt_api_token({'fun': 'grains.items', 'tgt': tgt},
-                                salt_api_url, {'X-Auth-Token': token}).CmdRun()['return'][0]
-        logger.info('扫描Minion数量为[%s]', len(result))
-        logger.debug('Minions资产信息[%s]' % result)
-
         con = Q()
         #  for scan south
         if tgt == 'SCYD-south':
+            tgt = 'SCYD-*'
             q1 = Q()
             q1.connector = 'OR'
             q1.children.append(('idc', '109'))
@@ -59,6 +52,7 @@ class ScanMinion(View):
             Host.objects.filter(con).update(m_status=0)
         #  for scan west
         if tgt == 'SCYD-west':
+            tgt = 'SCYD-*'
             q1 = Q()
             q1.connector = 'OR'
             q1.children.append(('idc', '301'))
@@ -69,6 +63,13 @@ class ScanMinion(View):
             con.add(q1, 'AND')
             con.add(q2, 'AND')
             Host.objects.filter(con).update(m_status=0)
+        logger.info('获取Minion主机资产信息')
+        # result = salt_api_token({'fun': 'grains.items', 'tgt': tgt, 'expr_form': 'list'},
+        #                         SALT_API_URL, {'X-Auth-Token': token_id()}).CmdRun()['return'][0]
+        result = salt_api_token({'fun': 'grains.items', 'tgt': tgt},
+                                salt_api_url, {'X-Auth-Token': token}).CmdRun()['return'][0]
+        logger.info('扫描Minion数量为[%s]', len(result))
+        logger.debug('Minions资产信息[%s]' % result)
 
         for host in result:
             m_status = 1
@@ -92,6 +93,9 @@ class ScanMinion(View):
                     lan_ip = ip
                 elif "10.1.33" in ip or "10.3.33" in ip:
                     idc = '601'
+                    lan_ip = ip
+                elif "117" in ip:
+                    idc = '201'
                     lan_ip = ip
                 # 南区服务器管理IP 109机房10.25.178.0, 10.110.70.0  111机房10.25.177.0, 10.110.72.0  210机房10.110.73.0
                 if "10.25.178" in ip or "10.110.70" in ip or "10.25.177" in ip or "10.110.72" in ip or "10.110.73" in ip:
