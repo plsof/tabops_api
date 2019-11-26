@@ -151,3 +151,11 @@ class UBS(Base):
         ordering = ['idc', 'service', 'ip']
         verbose_name = 'UBS'
         verbose_name_plural = verbose_name
+
+
+class VAS(Base):
+
+    class Meta:
+        ordering = ['idc', 'service', 'ip']
+        verbose_name = 'VAS'
+        verbose_name_plural = verbose_name

@@ -17,3 +17,4 @@ from .architecture import UCSSerializer
 from .architecture import MGSSerializer
 from .architecture import NMCSerializer
 from .architecture import UBSSerializer
+from .architecture import VASSerializer
