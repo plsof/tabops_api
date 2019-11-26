@@ -17,3 +17,4 @@ from .architecture import UCS
 from .architecture import MGS
 from .architecture import NMC
 from .architecture import UBS
+from .architecture import VAS

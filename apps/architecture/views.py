@@ -324,3 +324,20 @@ class UBSViewSet(ResponseModelViewSet):
         if ip is not None and ip is not '':
             queryset = queryset.filter(ip__contains=ip)
         return queryset
+
+
+class VASViewSet(ResponseModelViewSet):
+    serializer_class = serializer.VASSerializer
+
+    def get_queryset(self):
+        queryset = models.VAS.objects.all()
+        idc = self.request.query_params.get('idc', None)
+        service = self.request.query_params.get('service', None)
+        ip = self.request.query_params.get('ip', '').strip()
+        if idc is not None and idc is not '':
+            queryset = queryset.filter(idc=idc)
+        if service is not None and service is not '':
+            queryset = queryset.filter(service=service)
+        if ip is not None and ip is not '':
+            queryset = queryset.filter(ip__contains=ip)
+        return queryset
