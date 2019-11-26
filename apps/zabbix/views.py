@@ -78,8 +78,6 @@ class PortRefresh(View):
             queryset = models.NMC.objects.filter(id=aid)
         elif db == 'UBS':
             queryset = models.UBS.objects.filter(id=aid)
-        elif db == 'VAS':
-            queryset = models.VAS.objects.filter(id=aid)
         values = queryset.values('ip', 'port')[0]
         if "10.1" in values['ip'] or "10.3" in values['ip']:
             zabbix_api_url = ZABBIX_API_URL_WEST

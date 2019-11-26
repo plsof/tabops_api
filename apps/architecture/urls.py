@@ -24,7 +24,6 @@ router.register(r'ucs', views.UCSViewSet, basename='UCS')
 router.register(r'mgs', views.MGSViewSet, basename='MGS')
 router.register(r'nmc', views.NMCViewSet, basename='NMC')
 router.register(r'ubs', views.UBSViewSet, basename='UBS')
-router.register(r'vas', views.VASViewSet, basename='VAS')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -133,10 +133,3 @@ class UBSSerializer(BaseSerializer):
     class Meta:
         model = models.UBS
         fields = '__all__'
-
-
-class VASSerializer(BaseSerializer):
-
-    class Meta:
-        model = models.VAS
-        fields = '__all__'
