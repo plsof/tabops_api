@@ -87,7 +87,10 @@ class PortRefresh(View):
             token = token_get("z_token_south", zabbix_api_url)
         # 只验证有端口的实例
         if values['port']:
-            port = "net.tcp.service[tcp,,%s]" % values['port']
+            if values['port'] in [3306, 3307]:
+                port = "net.tcp.listen[%d]" % values['port']
+            else:
+                port = "net.tcp.service[tcp,,%d]" % values['port']
             PAYLOAD['params']['host'] = values['ip']
             PAYLOAD['params']['search']['key_'] = port
             PAYLOAD['auth'] = token
