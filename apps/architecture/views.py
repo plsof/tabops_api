@@ -3,341 +3,138 @@ from architecture import models
 from architecture import serializer
 
 
-class WtvViewSet(ResponseModelViewSet):
+class ArchitectureViewSet(ResponseModelViewSet):
+
+    def get_queryset(self):
+        queryset = self.queryset
+        idc = self.request.query_params.get('idc', None)
+        service = self.request.query_params.get('service', None)
+        ip = self.request.query_params.get('ip', '').strip()
+        if idc is not None and idc is not '':
+            queryset = queryset.filter(idc=idc)
+        if service is not None and service is not '':
+            queryset = queryset.filter(service=service)
+        if ip is not None and ip is not '':
+            queryset = queryset.filter(ip__contains=ip)
+        return queryset
+
+
+class WtvViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.WtvSerializer
-
-    def get_queryset(self):
-        queryset = models.Wtv.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.Wtv.objects.all()
 
 
-class BImsBootViewSet(ResponseModelViewSet):
+class BImsBootViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.BImsBootSerializer
-
-    def get_queryset(self):
-        queryset = models.BImsBoot.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.BImsBoot.objects.all()
 
 
-class BImsPanelViewSet(ResponseModelViewSet):
+class BImsPanelViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.BImsPanelSerializer
-
-    def get_queryset(self):
-        queryset = models.BImsPanel.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.BImsPanel.objects.all()
 
 
-class TmsViewSet(ResponseModelViewSet):
+class TmsViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.TmsSerializer
-
-    def get_queryset(self):
-        queryset = models.Tms.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.Tms.objects.all()
 
 
-class EpgViewSet(ResponseModelViewSet):
+class EpgViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.EpgSerializer
-
-    def get_queryset(self):
-        queryset = models.Epg.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.Epg.objects.all()
 
 
-class SearchViewSet(ResponseModelViewSet):
+class SearchViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.SearchSerializer
-
-    def get_queryset(self):
-        queryset = models.Search.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.Search.objects.all()
 
 
-class PicViewSet(ResponseModelViewSet):
+class PicViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.PicSerializer
-
-    def get_queryset(self):
-        queryset = models.Pic.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.Pic.objects.all()
 
 
-class PplViewSet(ResponseModelViewSet):
+class PplViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.PplSerializer
-
-    def get_queryset(self):
-        queryset = models.Ppl.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.Ppl.objects.all()
 
 
-class CosEpgViewSet(ResponseModelViewSet):
+class CosEpgViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.CosEpgSerializer
-
-    def get_queryset(self):
-        queryset = models.CosEpg.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.CosEpg.objects.all()
 
 
-class UicViewSet(ResponseModelViewSet):
+class UicViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.UicSerializer
-
-    def get_queryset(self):
-        queryset = models.Uic.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.Uic.objects.all()
 
 
-class MScreenViewSet(ResponseModelViewSet):
+class MScreenViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.MScreenSerializer
-
-    def get_queryset(self):
-        queryset = models.MScreen.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.MScreen.objects.all()
 
 
-class DMS2ViewSet(ResponseModelViewSet):
+class DMS2ViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.DMS2Serializer
-
-    def get_queryset(self):
-        queryset = models.DMS2.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.DMS2.objects.all()
 
 
-class XMppViewSet(ResponseModelViewSet):
+class XMppViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.XMppSerializer
-
-    def get_queryset(self):
-        queryset = models.XMpp.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.XMpp.objects.all()
 
 
-class NDmsViewSet(ResponseModelViewSet):
+class NDmsViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.NDmsSerializer
-
-    def get_queryset(self):
-        queryset = models.NDms.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.NDms.objects.all()
 
 
-class TOSViewSet(ResponseModelViewSet):
+class TOSViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.TOSSerializer
-
-    def get_queryset(self):
-        queryset = models.TOS.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.TOS.objects.all()
 
 
-class UCSViewSet(ResponseModelViewSet):
+class UCSViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.UCSSerializer
-
-    def get_queryset(self):
-        queryset = models.UCS.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.UCS.objects.all()
 
 
-class MGSViewSet(ResponseModelViewSet):
+class MGSViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.MGSSerializer
-
-    def get_queryset(self):
-        queryset = models.MGS.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.MGS.objects.all()
 
 
-class NMCViewSet(ResponseModelViewSet):
+class NMCViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.NMCSerializer
-
-    def get_queryset(self):
-        queryset = models.NMC.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.NMC.objects.all()
 
 
-class UBSViewSet(ResponseModelViewSet):
+class UBSViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.UBSSerializer
-
-    def get_queryset(self):
-        queryset = models.UBS.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
+    queryset = models.UBS.objects.all()
 
 
-class VASViewSet(ResponseModelViewSet):
+class VASViewSet(ArchitectureViewSet):
+
     serializer_class = serializer.VASSerializer
+    queryset = models.VAS.objects.all()
 
-    def get_queryset(self):
-        queryset = models.VAS.objects.all()
-        idc = self.request.query_params.get('idc', None)
-        service = self.request.query_params.get('service', None)
-        ip = self.request.query_params.get('ip', '').strip()
-        if idc is not None and idc is not '':
-            queryset = queryset.filter(idc=idc)
-        if service is not None and service is not '':
-            queryset = queryset.filter(service=service)
-        if ip is not None and ip is not '':
-            queryset = queryset.filter(ip__contains=ip)
-        return queryset
