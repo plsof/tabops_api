@@ -1,15 +1,15 @@
 from common.views import ResponseModelViewSet
-from .models import Idc
-from .models import Host
-from .serializer import IdcSerializer
-from .serializer import HostSerializer
+from asset import models
+from asset import serializer
 
 
 class IdcViewSet(ResponseModelViewSet):
-    serializer_class = IdcSerializer
+
+    serializer_class = serializer.IdcSerializer
+    queryset = models.Idc.objects.all()
 
     def get_queryset(self):
-        queryset = Idc.objects.all()
+        queryset = self.queryset
         isp = self.request.query_params.get('isp', None)
         if isp is not None and isp is not '':
             queryset = queryset.filter(isp=isp)
@@ -17,10 +17,12 @@ class IdcViewSet(ResponseModelViewSet):
 
 
 class HostViewSet(ResponseModelViewSet):
-    serializer_class = HostSerializer
+
+    serializer_class = serializer.HostSerializer
+    queryset = models.Host.objects.all()
 
     def get_queryset(self):
-        queryset = Host.objects.all()
+        queryset = self.queryset
         idc = self.request.query_params.get('idc', None)
         lan_ip = self.request.query_params.get('lan_ip', '').strip()
         roles = self.request.query_params.get('roles', '').strip()
