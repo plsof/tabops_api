@@ -12,11 +12,11 @@ class MyPageNumber(PageNumberPagination):
 
 # 自定义返回格式
 class ResponseInfo(object):
-    def __init__(self, **args):
+    def __init__(self):
         self.response = {
-            "code": args.get('code', 0),
-            "data": args.get('data', []),
-            "msg": args.get('msg', 'success')
+            "code": 0,
+            "data": [],
+            "msg": 'success'
         }
 
 
@@ -36,7 +36,7 @@ class ResponseModelViewSet(ModelViewSet):
             self.response_format["data"] = response_data.data
         self.response_format["total"] = len(response_data.data)
         self.response_format["code"] = 0
-        if not response_data.data:
+        if not self.response_format["total"]:
             self.response_format["msg"] = "List empty"
         return Response(self.response_format)
 
@@ -51,7 +51,7 @@ class ResponseModelViewSet(ModelViewSet):
         self.response_format["data"] = response_data.data
         self.response_format["code"] = 0
         if not response_data.data:
-            self.response_format["msg"] = "Empty"
+            self.response_format["msg"] = "List Empty"
         return Response(self.response_format)
 
     def update(self, request, *args, **kwargs):
