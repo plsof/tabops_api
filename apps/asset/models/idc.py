@@ -5,7 +5,7 @@ from common.constants import ISP
 
 
 class Idc(BaseModel):
-    name = models.CharField(max_length=255, verbose_name='机房名称')
+    name = models.CharField(max_length=255, unique=True, verbose_name='机房名称')
     address = models.CharField(max_length=255, verbose_name='机房地址')
     isp = models.IntegerField(verbose_name='运营商', default=0, choices=ISP)
     bandwidth = models.CharField(max_length=255, blank=True, null=True, verbose_name='带宽')
