@@ -137,4 +137,3 @@ class VASViewSet(ArchitectureViewSet):
 
     serializer_class = serializer.VASSerializer
     queryset = models.VAS.objects.all()
-
