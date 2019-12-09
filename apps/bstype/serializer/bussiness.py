@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from bstype.models import Bussiness, Service
+from bstype.models import Bussiness
 
 
 class BussinessSerializer(serializers.ModelSerializer):
@@ -8,7 +8,7 @@ class BussinessSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bussiness
-        fields = ['id', 'name', 'btype', 'comment', 'btype_name']
+        fields = ['id', 'name', 'btype', 'domain', 'comment', 'btype_name']
 
     def get_btype_name(self, obj):
         return obj.get_btype_display()
