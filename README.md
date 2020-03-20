@@ -27,6 +27,9 @@ title: CMDB
 
 - 支持在线生成API文档(基于rest_framework.documentation)
 
+## 🪐 安装
+本项目使用docker-compose部署、运行，详见`./docker-compose/docker-compose.yml`文件
+
 ## License
 
 [MIT]

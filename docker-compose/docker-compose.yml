@@ -1,0 +1,42 @@
+version: "3"
+services:
+  redis:
+    image: redis:5
+  mysql:
+    image: mysql:5.7
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 21ysten123
+    ports:
+      - "3307:3306"
+  backend:
+    sysctls:
+      net.core.somaxconn: 65535
+    build: ./backend/
+    image: backend:v2.0.0
+    volumes:
+      - ./data/media:/code/media
+      - ./backend/tabops_api:/code
+    command: uwsgi --ini uwsgi.ini
+    ports:
+      - "7000:7000"
+    depends_on:
+      - redis
+      - mysql
+    links:
+      - redis
+      - mysql
+  frontend:
+    build: ./frontend/
+    image: frontend:v2.0.0
+    volumes:
+      - ./data/media:/usr/share/nginx/html/media/
+    ports:
+      - 8000:8000
+    depends_on:
+      - backend
+#    links:
+#      - backend
+    restart: always
