@@ -21,9 +21,9 @@ title: CMDB
 
 - JWT 认证
 
-- 服务器信息自动收集(基于celery 支持多salt master)
+- 服务器信息自动收集(基于celery, salt 支持多salt master)
 
-- 服务部署信息自动zabbix对接验证(基于celery 支持多zabbix)
+- 服务部署信息自动zabbix对接验证(基于celery, zabbix 支持多zabbix)
 
 - 支持在线生成API文档(基于rest_framework.documentation)
 
