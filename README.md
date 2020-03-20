@@ -30,6 +30,11 @@ title: CMDB
 ## 🪐 安装
 本项目使用docker-compose部署、运行，详见`./docker-compose/docker-compose.yml`文件
 
+```shell
+cd docker-compose
+docker-compose up -d
+```
+
 ## License
 
 [MIT]
