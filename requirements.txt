@@ -20,7 +20,7 @@ more-itertools==7.2.0
 mysqlclient==1.4.2.post1
 PyJWT==1.7.1
 pytz==2019.1
-PyYAML==5.1.2
+PyYAML==5.4
 redis==3.3.8
 requests==2.22.0
 sqlparse==0.3.0
