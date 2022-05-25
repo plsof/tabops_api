@@ -18,7 +18,7 @@ kombu==4.6.4
 MarkupSafe==1.1.1
 more-itertools==7.2.0
 mysqlclient==1.4.2.post1
-PyJWT==1.7.1
+PyJWT==2.4.0
 pytz==2019.1
 PyYAML==5.1.2
 redis==3.3.8
